@@ -41,7 +41,7 @@ const escapes: { [key: string]: string } = {
   '#': '\\#',
 };
 
-// bring this out of the function for "efficiency reasons", don't want to have to 
+// bring this out of the function for "efficiency reasons", don't want to have to
 // recompile our regex every time we call the escape function on a string
 const escapeRegex = new RegExp(Object.keys(escapes).join('|'), 'g');
 
@@ -58,7 +58,7 @@ export function escape(str: string): string {
 
   return str.replace(escapeRegex, (matchedLiteral) => {
     // '$' is a regex capture for end of string but we still need to replace '$'
-    if (matchedLiteral == '$'){
+    if (matchedLiteral === '$'){
       return '\\$';
     }
     return escapes[matchedLiteral];
