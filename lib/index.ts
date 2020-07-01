@@ -33,7 +33,7 @@ const escapes: { [key: string]: string } = {
   '\n': ' \\\\ ',
   ' - ': ' --- ',
   '&': '\\&',
-  '$' : '\\$',
+  '\\$' : '\\$',
   '%': '\\%',
   '{': '\\{',
   '}': '\\}',
@@ -55,6 +55,9 @@ export function escape(str: string): string {
   }
 
   return str.replace(escapeRegex, (matchedLiteral) => {
+    // we include the special case for '$' because '$' is a regex capture group for end of string/file
+    // so, we can't include it in the captures or else it will flag every end of string and replace it
+    // with something we don't want there...but we still need to capture '$'
     if (matchedLiteral == '$'){
       return '\\$';
     }
