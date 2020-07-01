@@ -29,19 +29,7 @@ import {
  */
 const DATE_FORMAT = 'LL';
 
-const regexCaptures: string[] = [
-  '\n',
-  ' - ',
-  '&',
-  '\\$',
-  '%',
-  '{',
-  '}',
-  '_',
-  '#',
-];
-
-const replacer: { [key: string]: string } = {
+const escapes: { [key: string]: string } = {
   '\n': ' \\\\ ',
   ' - ': ' --- ',
   '&': '\\&',
@@ -53,7 +41,7 @@ const replacer: { [key: string]: string } = {
   '#': '\\#',
 };
 
-const escapeRegex = new RegExp(regexCaptures.join('|'), 'g');
+const escapeRegex = new RegExp(Object.keys(escapes).join('|'), 'g');
 
 /**
  * Escapes any LaTeX special characters in the given string.
@@ -66,7 +54,12 @@ export function escape(str: string): string {
     return '';
   }
 
-  return str.replace(escapeRegex, (matchedLiteral) => replacer[matchedLiteral]);
+  return str.replace(escapeRegex, (matchedLiteral) => {
+    if (matchedLiteral == '$'){
+      return '\\$';
+    }
+    return escapes[matchedLiteral];
+  });
 }
 
 /**
