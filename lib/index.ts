@@ -29,6 +29,32 @@ import {
  */
 const DATE_FORMAT = 'LL';
 
+const regexCaptures: string[] = [
+  '\n',
+  ' - ',
+  '&',
+  '\\$',
+  '%',
+  '{',
+  '}',
+  '_',
+  '#',
+];
+
+const replacer: { [key: string]: string } = {
+  '\n': ' \\\\ ',
+  ' - ': ' --- ',
+  '&': '\\&',
+  '$' : '\\$',
+  '%': '\\%',
+  '{': '\\{',
+  '}': '\\}',
+  '_': '\\_',
+  '#': '\\#',
+};
+
+const escapeRegex = new RegExp(regexCaptures.join('|'), 'g');
+
 /**
  * Escapes any LaTeX special characters in the given string.
  *
@@ -39,15 +65,8 @@ export function escape(str: string): string {
   if (!str) {
     return '';
   }
-  // Uses the approach described in https://stackoverflow.com/a/15604206.
-  // TODO: complete the implementation by filling in more escapes.
-  const escapes: { [key: string]: string } = {
-    '\n': ' \\\\ ',
-    ' - ': ' --- ',
-  };
-  const escapeRegex = new RegExp(Object.keys(escapes).join('|'), 'g');
 
-  return str.replace(escapeRegex, (matched) => escapes[matched]);
+  return str.replace(escapeRegex, (matchedLiteral) => replacer[matchedLiteral]);
 }
 
 /**
